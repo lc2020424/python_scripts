@@ -1,6 +1,9 @@
+import json
+import pprint
 import webbrowser
 
 import bs4
+import requests
 import xlwings
 
 ota_url = 'http://192.168.10.6:8357'
@@ -8,12 +11,12 @@ mcu_url = 'http://192.168.10.1:5000/api/v1/dev/sn'
 webbrowser.open(ota_url)
 webbrowser.open(mcu_url)
 
-# response = requests.get(mcu_url)
-# file = open('sn.html', 'wb')
-# for chunk in response.iter_content(100000):
-#     file.write(chunk)
-# print('\n')
-# print(response.text)
+response = requests.get(mcu_url)
+file = open('sn.html', 'wb')
+for chunk in response.iter_condtent(100000):
+    file.write(chunk)
+data = response.text
+data = json.loads(data)['data']
 
 file = open('OTA.html', encoding='utf8')
 soup = bs4.BeautifulSoup(file.read(), features='html.parser')
@@ -28,17 +31,19 @@ for i in range(0, len(elements)):
         index = key.find('HQEV')
         car_id = key[index:index + 7]
     params[key] = value
-    print(key, value)
-
-print('***Finished parsing OTA.html, writing data into spreadsheet......\n')
+for key, value in data.items():
+    params[key] = value
+print('\n***Finished parsing OTA.html, writing data into spreadsheet......\n')
 
 workbook = xlwings.Book(r'C:\Users\jcglq\Desktop\沧州车辆版本检查反馈表.xlsx')
 sheet_name = 'Sheet1'
 sheet = workbook.sheets[sheet_name]
-for row in range(2, 33):
+pprint.pprint(params)
+print('\ncar_id', car_id, '\n')
+for row in range(1, 33):
     header_cell = sheet.range('A' + str(row))
     if header_cell.value == car_id:
-        for column in range(ord('B'), ord('Q')):
+        for column in range(ord('B'), ord('V')):
             current_cell = sheet.range(chr(column) + str(row))
             standard_cell = sheet.range(chr(column) + str(32))
             param_key = sheet.range(str(chr(column)) + str(1)).value
@@ -53,7 +58,5 @@ for row in range(2, 33):
                 if current_cell.value != sheet.range('B' + str(32)).value:
                     print(current_cell.value, '***', sheet.range('B' + str(32)), '***Color...\n\n')
                     current_cell.api.Font.Color = 0x0000ff
-        break
-
 workbook.save()
 workbook.close()
