@@ -59,6 +59,7 @@ for row in range(1, 33):
                     print(current_cell.value, '***', sheet.range('B' + str(32)), '***Color...\n\n')
                     current_cell.api.Font.Color = 0x0000ff
             elif param_key.__contains__('params-HQEV'):
+                # current_cell.value = params['params-' + car_id + '-robotaxi']
                 current_cell.value = params['params-' + car_id + '-robotaxi']
 workbook.save()
 workbook.close()
