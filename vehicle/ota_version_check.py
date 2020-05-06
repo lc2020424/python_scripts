@@ -35,7 +35,7 @@ for key, value in data.items():
 print('\n***Finished parsing OTA.html, writing data into spreadsheet......\n')
 
 workbook = xlwings.Book(r'C:\Users\jcglq\Desktop\沧州车辆版本检查反馈表.xlsx')
-sheet_name = 'Sheet1'
+sheet_name = 'Sheet2'
 sheet = workbook.sheets[sheet_name]
 pprint.pprint(params)
 print('\ncar_id', car_id, '\n')
