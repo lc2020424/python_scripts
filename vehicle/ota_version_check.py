@@ -50,7 +50,7 @@ for row in range(1, 33):
             current_cell.api.Font.Bold = False
             if params.__contains__(param_key):
                 current_cell.value = params[param_key]
-                if current_cell.value != standard_cell.value:
+                if current_cell.value != standard_cell.value and param_key != 'sn':
                     current_cell.api.Font.Color \
                         = 0x0000ff
             elif param_key == 'iso版本':
